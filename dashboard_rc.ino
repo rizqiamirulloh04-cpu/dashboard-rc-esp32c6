@@ -29,30 +29,26 @@
 #define TFT_RST    8
 
 // ===== SPI Bus =====
-// Format constructor:
-// Arduino_ESP32SPI(dc, cs, sck, mosi, miso)
 Arduino_DataBus *bus = new Arduino_ESP32SPI(
-  TFT_DC,
-  TFT_CS,
-  TFT_SCLK,
-  TFT_MOSI,
-  GFX_NOT_DEFINED
+  TFT_DC,          // DC
+  TFT_CS,          // CS
+  TFT_SCLK,        // SCK
+  TFT_MOSI,        // MOSI
+  GFX_NOT_DEFINED  // MISO tidak digunakan
 );
 
 // ===== LCD ST7789 172x320 =====
-// Format constructor:
-// Arduino_ST7789(bus, rst, rotation, ips, width, height, col_offset1, row_offset1, col_offset2, row_offset2)
 Arduino_GFX *gfx = new Arduino_ST7789(
   bus,
   TFT_RST,
-  0,
-  true,
-  172,
-  320,
-  34,
-  0,
-  34,
-  0
+  1,      // rotation awal
+  true,   // IPS panel
+  172,    // width
+  320,    // height
+  34,     // col offset 1
+  0,      // row offset 1
+  34,     // col offset 2
+  0       // row offset 2
 );
 
 // ===== Variabel Dashboard =====
@@ -97,7 +93,7 @@ void drawDashboard()
   gfx->setCursor(220, 70);
   gfx->print("km/h");
 
-  // Speed
+  // Speed besar
   gfx->setTextColor(CYAN);
   gfx->setTextSize(6);
   gfx->setCursor(60, 90);
@@ -131,15 +127,11 @@ void drawDashboard()
 void setup()
 {
   pinMode(TFT_BL, OUTPUT);
-  digitalWrite(TFT_BL, HIGH); // Backlight ON
+  digitalWrite(TFT_BL, HIGH); // Nyalakan backlight
 
   Serial.begin(115200);
 
-  if (!gfx->begin()) {
-    Serial.println("gfx->begin() failed!");
-    while (1) delay(100);
-  }
-
+  gfx->begin();
   gfx->setRotation(1); // Landscape
 
   drawDashboard();
