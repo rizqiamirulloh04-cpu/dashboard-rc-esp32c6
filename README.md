@@ -1,1 +1,1 @@
-# dashboard-rc-esp32c6
+dashboard-rc-esp32c6.ino
