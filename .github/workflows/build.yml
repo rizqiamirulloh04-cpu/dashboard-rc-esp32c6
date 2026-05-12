@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout source
         uses: actions/checkout@v4
 
       - name: Setup Arduino CLI
@@ -20,19 +20,20 @@ jobs:
           arduino-cli core update-index
           arduino-cli core install esp32:esp32
 
-      - name: Install Library
+      - name: Install Arduino_GFX Library
         run: |
           arduino-cli lib install "Arduino_GFX"
 
-      - name: Compile
+      - name: Compile Sketch
         run: |
+          mkdir -p build
           arduino-cli compile \
             --fqbn esp32:esp32:esp32c6 \
+            --output-dir build \
             dashboard_rc.ino
 
       - name: Upload Binary
         uses: actions/upload-artifact@v4
         with:
           name: firmware
-          path: |
-            build/*/*.bin
+          path: build/*.bin
