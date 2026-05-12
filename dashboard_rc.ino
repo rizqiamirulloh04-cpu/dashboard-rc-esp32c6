@@ -1,5 +1,5 @@
 /*
-  dashboard-rc-esp32c6.ino
+  dashboard-rc.ino
   Test firmware minimal untuk memastikan GitHub Actions berhasil compile
   Board: ESP32-C6 Dev Module
 */
