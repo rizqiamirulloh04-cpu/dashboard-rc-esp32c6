@@ -1,0 +1,50 @@
+name: Build ESP32-C6 Firmware
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Setup Arduino CLI
+        uses: arduino/setup-arduino-cli@v2
+
+      - name: Install ESP32 Core
+        run: |
+          arduino-cli config init
+          arduino-cli core update-index
+          arduino-cli core install esp32:esp32
+
+      - name: Install Libraries
+        run: |
+          mkdir -p ~/Arduino/libraries
+
+          # Install Arduino_GFX from GitHub
+          git clone --depth=1 https://github.com/moononournation/Arduino_GFX.git \
+            ~/Arduino/libraries/Arduino_GFX
+
+          # Install Adafruit GFX
+          arduino-cli lib update-index
+          arduino-cli lib install "Adafruit GFX Library"
+
+      - name: Compile Sketch
+        run: |
+          arduino-cli compile \
+            --fqbn esp32:esp32:esp32c6 \
+            --output-dir build \
+            dashboard_rc_esp32c6.ino
+
+      - name: Upload Firmware
+        uses: actions/upload-artifact@v4
+        with:
+          name: firmware-bin
+          path: build/*.bin
