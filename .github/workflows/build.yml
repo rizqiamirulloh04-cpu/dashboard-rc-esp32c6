@@ -22,7 +22,7 @@ jobs:
 
       - name: Install Arduino_GFX Library
         run: |
-          arduino-cli lib install "Arduino_GFX"
+          arduino-cli lib install "Arduino_GFX_Library"
 
       - name: Compile Sketch
         run: |
