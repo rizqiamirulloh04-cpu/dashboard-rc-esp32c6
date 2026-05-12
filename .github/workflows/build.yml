@@ -1,0 +1,38 @@
+name: Build ESP32-C6 Firmware
+
+on:
+  workflow_dispatch:
+  push:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Arduino CLI
+        uses: arduino/setup-arduino-cli@v2
+
+      - name: Install ESP32 Core
+        run: |
+          arduino-cli core update-index
+          arduino-cli core install esp32:esp32
+
+      - name: Install Library
+        run: |
+          arduino-cli lib install "Arduino_GFX"
+
+      - name: Compile
+        run: |
+          arduino-cli compile \
+            --fqbn esp32:esp32:esp32c6 \
+            dashboard_rc.ino
+
+      - name: Upload Binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: firmware
+          path: |
+            build/*/*.bin
